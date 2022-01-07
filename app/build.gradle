@@ -54,6 +54,4 @@ dependencies {
 
     // If you want to use the base sdk
     implementation 'com.google.mlkit:pose-detection:17.0.1-beta7'
-    // If you want to use the accurate sdk
-    implementation 'com.google.mlkit:pose-detection-accurate:17.0.1-beta7'
 }

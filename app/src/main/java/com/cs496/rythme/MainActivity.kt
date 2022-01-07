@@ -80,7 +80,8 @@ class MainActivity : AppCompatActivity() ,AngleCalculator{
         // Base pose detector with streaming frames, when depending on the pose-detection sdk
         val options = PoseDetectorOptions.Builder()
             .setDetectorMode(PoseDetectorOptions.STREAM_MODE)
-            .build()
+            .build();
+
         return PoseDetection.getClient(options)
     }
 
@@ -104,26 +105,19 @@ class MainActivity : AppCompatActivity() ,AngleCalculator{
             //Analyzer 바인더
             val imageAnalysis = ImageAnalysis.Builder()
                 .setTargetResolution(Size(1280, 720))
-                .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
+//                .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
                 .build()
 
             imageAnalysis.setAnalyzer(cameraExecutor, ImageAnalysis.Analyzer { imageProxy ->
                 val mediaImage = imageProxy.image
-                if (mediaImage != null) {
+                Log.d("이미지 분석기", "시도중")
+                try {
                     val image = InputImage.fromMediaImage(mediaImage, imageProxy.imageInfo.rotationDegrees)
+                    val result = poseDetector.process(image)
+                    Log.d("이미지 분석기", "성")
 
-                    try {
-                        poseDetector.process(image)
-                            .addOnSuccessListener { results ->
-                                if (results != null) {
-                                    if (results.allPoseLandmarks.size != 0) {
-                                        getVector(results)
-                                        Log.d("인식성공", getVector(results).toString())
-                                    }
-                                }
-                            }
-                    }
-                    catch (e:MlKitException){ Log.e(TAG,e.toString()) }
+                } catch (e: MlKitException) {
+                    Log.e(TAG, "Failed to process image. Error: " + e.localizedMessage)
                 }
 
                 imageProxy.close()
