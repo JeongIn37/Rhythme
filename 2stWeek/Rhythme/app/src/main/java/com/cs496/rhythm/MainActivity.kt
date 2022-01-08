@@ -94,7 +94,8 @@ class MainActivity : AppCompatActivity(), calcPoseVector {
                         Log.d("Analyzer","스켈레톤 추출 성공, 관절갯수${results.allPoseLandmarks.size}")
                         if(results.allPoseLandmarks.size>0){
                             getPoseVector(results)
-                            Log.d("관절각도",getPoseVector(results).toString())
+                            val pose = getPoseVector(results)
+                            Log.d("관절각도","왼쪽 팔꿈치 : ${pose[0]}, 왼쪽 어깨 : ${pose[1]}, 오른쪽 어깨 : ${pose[2]}, 오른쪽 팔꿈치 : ${pose[3]}")
                         }
                     }
                     .addOnFailureListener { e ->
