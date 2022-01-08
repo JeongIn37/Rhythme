@@ -12,14 +12,36 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Rhythm">
-        <activity
-            android:name=".MainActivity"
+
+        <activity android:name=".LogInActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+
+        <activity android:name=".StreamingActivity"
+            android:exported="true">
+
+        </activity>
+
+        <activity android:name=".SelectVideoActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="kr.co.hta.MyAction"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".VideoChoiceActivity">
+        </activity>
+
+        <activity
+            android:name=".MainActivity"
+            android:exported="true">
+
         </activity>
     </application>
 
