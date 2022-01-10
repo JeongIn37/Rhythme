@@ -9,9 +9,6 @@
         <entry key="app/src/main/res/layout/login.xml" value="0.24583333333333332" />
         <entry key="app/src/main/res/layout/music_list.xml" value="0.37604166666666666" />
         <entry key="app/src/main/res/layout/stream_video.xml" value="0.1" />
-        <entry key="app/src/main/res/layout/video_detail.xml" value="0.24583333333333332" />
-        <entry key="app/src/main/res/layout/video_list.xml" value="0.12082066869300911" />
-        <entry key="app/src/main/res/raw/drawable/ic_play_filled.xml" value="0.228125" />
       </map>
     </option>
   </component>

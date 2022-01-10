@@ -62,4 +62,5 @@ dependencies {
     implementation "androidx.camera:camera-view:1.0.0-alpha27"
 
     implementation 'com.google.mlkit:pose-detection:17.0.1-beta7'
+    implementation 'com.google.mlkit:pose-detection-accurate:17.0.1-beta7'
 }
