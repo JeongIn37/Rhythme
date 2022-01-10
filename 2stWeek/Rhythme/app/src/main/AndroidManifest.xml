@@ -4,6 +4,7 @@
 
     <uses-feature android:name="android.hardware.camera.any" />
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
         android:allowBackup="true"
@@ -15,6 +16,10 @@
 
         <activity android:name=".LogInActivity"
             android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
 
         <activity android:name=".StreamingActivity"
@@ -24,10 +29,7 @@
 
         <activity android:name=".SelectVideoActivity"
             android:exported="true">
-            <intent-filter>
-                <action android:name="kr.co.hta.MyAction"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-            </intent-filter>
+
         </activity>
 
         <activity
@@ -37,11 +39,6 @@
         <activity
             android:name=".MainActivity"
             android:exported="true">
-
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
     </application>
 
