@@ -1,5 +1,6 @@
 package com.cs496.rhythm;
 
+import static java.lang.Math.abs;
 import static java.lang.Math.atan2;
 
 import com.google.mlkit.vision.pose.Pose;
@@ -32,5 +33,30 @@ public interface calcPoseVector {
         temp[6]=getAngle(pose.getPoseLandmark(25),pose.getPoseLandmark(23),pose.getPoseLandmark(11));
         temp[7]=getAngle(pose.getPoseLandmark(27),pose.getPoseLandmark(25),pose.getPoseLandmark(23));
         return temp;
+    }
+
+    static int grade(double[] a, double[] b)
+    {
+        int sum=0;
+        for(int i=0;i<8;i++)
+        {
+            if(abs(a[i]-b[i])<=20)
+            {
+                sum+=100;
+            }
+            else if(abs(a[i]-b[i])<=40)
+            {
+                sum+=80;
+            }
+            else if(abs(a[i]-b[i])<=60)
+            {
+                sum+=50;
+            }
+            else
+            {
+                sum+=0;
+            }
+        }
+        return sum/8;
     }
 }

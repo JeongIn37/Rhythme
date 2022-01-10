@@ -10,7 +10,7 @@ import android.media.MediaMetadataRetriever
 import android.media.MediaPlayer
 import android.net.Uri
 import android.util.Log
-import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import android.widget.VideoView
 import androidx.core.app.ActivityCompat
@@ -19,6 +19,7 @@ import java.util.concurrent.Executors
 import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
 import com.cs496.rhythm.calcPoseVector.getPoseVector
+import com.cs496.rhythm.calcPoseVector.grade
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.pose.PoseDetection
 import com.google.mlkit.vision.pose.accurate.AccuratePoseDetectorOptions
@@ -28,32 +29,49 @@ import java.util.*
 import java.util.concurrent.ExecutorService
 import kotlin.collections.ArrayList
 
-lateinit var currentPose:Array<Double>
+lateinit var currentPose:DoubleArray
 
 class MainActivity : AppCompatActivity(), calcPoseVector {
 
     private lateinit var cameraExecutor: ExecutorService
     var timer = Timer()
+    var Loader = Timer()
     lateinit var videov: VideoView
     lateinit var posePerTime : ArrayList<DoubleArray>
     lateinit var tempImage : ArrayList<Bitmap> //담에지울거
-    lateinit var tempViewer : ImageView
+    lateinit var scoreboard : TextView
     var time = 0
     lateinit var retriever : MediaMetadataRetriever
     lateinit var mediaPlayer : MediaPlayer
+    var CheckSet : Int =0
+    var finalScore = 0
 
-    var timerTask: TimerTask = object : TimerTask() {
+    var LoadCheck: TimerTask = object : TimerTask() {
+        override fun run() {
+            Log.d("로딩중","${posePerTime.size}/${CheckSet}")
+            if(posePerTime.size == CheckSet){
+                Loader.cancel()
+                startGame()
+                return
+            }
+        }
+    }
+
+    var ScoreCheck: TimerTask = object : TimerTask() {
         override fun run() {
             if(posePerTime.size==time){
                 timer.cancel()
                 endGame()
                 return
             }
-            Log.d("ddd","${tempImage.size}번째 중 ${time}번째")
+            Log.d("게임 진행도","${tempImage.size}번째 중 ${time}번째")
             Log.d("현재 카메라 각도","왼쪽 팔꿈치 : ${currentPose[0]}, 왼쪽 어깨 : ${currentPose[1]}, 오른쪽 어깨 : ${currentPose[2]}, 오른쪽 팔꿈치 : ${currentPose[3]}")
             Log.d("현재 동영상 각도","왼쪽 팔꿈치 : ${posePerTime[time][0]}, 왼쪽 어깨 : ${posePerTime[time][1]}, 오른쪽 어깨 : ${posePerTime[time][2]}, 오른쪽 팔꿈치 : ${posePerTime[time][3]}")
 
-            //currentPose, posePerTime[time]비교
+            var score:Int = grade(currentPose,posePerTime[time]);
+            Log.d("점수",score.toString())
+            scoreboard.text = score.toString()
+            finalScore+=score;
 
             time++
         }
@@ -64,7 +82,7 @@ class MainActivity : AppCompatActivity(), calcPoseVector {
         setContentView(R.layout.activity_main)
 
         videov = findViewById<VideoView>(R.id.videoView)
-
+        scoreboard = findViewById<TextView>(R.id.matchScore)
         // Request camera permissions
         if (allPermissionsGranted()) {
             startCamera()
@@ -76,7 +94,6 @@ class MainActivity : AppCompatActivity(), calcPoseVector {
         cameraExecutor = Executors.newSingleThreadExecutor()
 
         loadGame()
-        startGame()
     }
 
     fun loadGame() {
@@ -97,13 +114,14 @@ class MainActivity : AppCompatActivity(), calcPoseVector {
         retriever.setDataSource(application, uri)
         mediaPlayer = MediaPlayer.create(baseContext, uri)
         val millisecond = mediaPlayer.duration
+        CheckSet=millisecond / 3000
         Log.d("영상길이",millisecond.toString())
-        for (i in 0 until millisecond / 3000) {
+        for (i in 0 until CheckSet) {
             val time = ((i * 1000000)*3).toLong()
             val temp = retriever.getFrameAtTime(time, MediaMetadataRetriever.OPTION_CLOSEST)
             val image = InputImage.fromBitmap(temp, 0)
             if (temp != null) {
-                Log.d("dddddd","${time/1000000}초 이미지 등록")
+                Log.d("동영상 분석 전처리","${time/1000000}초 이미지 등록")
                 tempImage.add(temp)
             }
             //이미지 처리 실패시(포즈인식 실패) 앞뒤 영상중 되는 영상 확인
@@ -115,27 +133,38 @@ class MainActivity : AppCompatActivity(), calcPoseVector {
                         getPoseVector(result)
                         val currentPose = getPoseVector(result)
                         posePerTime.add(currentPose)
-                        Log.d("관절각도","왼쪽 팔꿈치 : ${currentPose[0]}, 왼쪽 어깨 : ${currentPose[1]}, 오른쪽 어깨 : ${currentPose[2]}, 오른쪽 팔꿈치 : ${currentPose[3]}")
+                        Log.d("관절각도","왼쪽 팔꿈치 : ${currentPose[0]}, 왼쪽 어깨 : ${currentPose[1]}, 오른쪽 어깨 : ${currentPose[2]},   팔꿈치 : ${currentPose[3]}")
                     }
+                    else {
+                        posePerTime.add(DoubleArray(8))
+                    }
+
                 }
                 .addOnFailureListener { e ->
                     Log.d("Analyzer","이미지 분석 실패 ${e.toString()}")
                 }
         }
+        Loader.schedule(LoadCheck, 0, 100)
     }
 
     fun startGame() {
         videov.start()
-        timer.schedule(timerTask, 0, 3000)
+        timer.schedule(ScoreCheck, 5000, 3000)
+        //로딩 끝
     }
 
     //게임종료후 처리 코
     fun endGame() {
+        //최종점수
+        finalScore/=CheckSet
+        scoreboard.text = finalScore.toString()
+
         Log.d("게임","끝------------------------")
         videov.pause()
     }
 
     private fun startCamera() {
+        Log.d("카메라","시작")
         val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
 
         cameraProviderFuture.addListener(Runnable {
@@ -155,7 +184,7 @@ class MainActivity : AppCompatActivity(), calcPoseVector {
                     it.setAnalyzer(cameraExecutor, YourImageAnalyzer {})
                 }
             // Select back camera as a default
-            val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
+            val cameraSelector = CameraSelector.DEFAULT_FRONT_CAMERA
 
             try {
                 // Unbind use cases before rebinding
@@ -182,20 +211,22 @@ class MainActivity : AppCompatActivity(), calcPoseVector {
         @SuppressLint("UnsafeOptInUsageError")
         override fun analyze(imageProxy: ImageProxy) {
             val mediaImage = imageProxy.image
-            Log.d("Analyzer","이미지변환")
             if (mediaImage != null) {
                 Log.d("Analyzer","이미지 분석 시도")
                 val image = InputImage.fromMediaImage(mediaImage, imageProxy.imageInfo.rotationDegrees)
                 poseDetector.process(image)
                     .addOnSuccessListener { results ->
-                        Log.d("Analyzer","스켈레톤 추출 성공, 관절갯수${results.allPoseLandmarks.size}")
+//                        Log.d("Analyzer","스켈레톤 추출 성공, 관절갯수${results.allPoseLandmarks.size}")
                         if(results.allPoseLandmarks.size>0){
                             getPoseVector(results)
-                            currentPose = getPoseVector(results) as Array<Double>
+                            currentPose = getPoseVector(results)
+                        }
+                        else {
+                            currentPose = DoubleArray(8)
                         }
                     }
                     .addOnFailureListener { e ->
-                        Log.d("Analyzer","이미지 분석 실패 ${e.toString()}")
+//                        Log.d("Analyzer","이미지 분석 실패 ${e.toString()}")
                     }
                     .addOnCompleteListener{
                         imageProxy.close()
