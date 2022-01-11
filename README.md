@@ -23,7 +23,7 @@
 <hr/>
 
 ## 2️⃣ Select Video to Play
-<img src="" height="450px"/><br/>
+<img src="https://user-images.githubusercontent.com/54874529/148950361-19c7381a-a2e9-4da4-ac3b-32a64f55433e.png" height="450px"/><br/>
 원하는 음악을 선택하여 플레이할 수 있습니다.
 제목 아래에는 해당 곡의 자신의 최고 점수가 기록됩니다.
 
@@ -31,12 +31,14 @@
 <hr/>
 
 ## 3️⃣ Show Ranking of Video
-<img src="" height="450px"/><br/>
+<img src="https://user-images.githubusercontent.com/54874529/148950391-10db3fbe-5a22-4333-b526-40c49b3d3f09.png" height="450px"/><br/>
 해당 음악을 플레이한 유저들의 랭킹을 볼 수 있습니다.
 랭킹에서는 상위 10개 기록의 User Name과 Score를 볼 수 있습니다.   
 
 
 ## 4️⃣ Play GAME!
-<img src="" height="450px"/><br/>
+<img src="https://user-images.githubusercontent.com/54874529/148950496-fb69c3c7-6982-4b5e-bad9-6fb020df06d5.png" height="450px"/><br/>
+<img src="https://user-images.githubusercontent.com/54874529/148950641-b8f35f22-f272-4e44-bec3-2cc97cfc108e.png" height="450px"/><br/>
+
 카메라를 보며 영상의 동작을 따라해보세요.
 3초에 한 번 동작별 점수가 표시되고, 노래가 종료되면 최종 점수를 확인할 수 있습니다.
