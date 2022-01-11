@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.AssetFileDescriptor
 import android.graphics.Bitmap
@@ -173,8 +174,22 @@ class MainActivity : AppCompatActivity(), calcPoseVector {
         finalScore/=CheckSet
         scoreboard.text = finalScore.toString()
 
+        //val intent = Intent(this, ShowScoreActivity::class.java)
+        //intent.putExtra("finalScore", finalScore.toString())
+        Log.d("점수 확인용--------------", finalScore.toString())
+        startActivity(
+            Intent(
+                this@MainActivity,
+                ShowScoreActivity::class.java
+            ).putExtra("finalScore", finalScore.toString())
+        )
+
         Log.d("게임","끝------------------------")
         videov.pause()
+
+
+
+
     }
 
     private fun startCamera() {
