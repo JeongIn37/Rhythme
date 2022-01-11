@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
+import android.content.res.AssetFileDescriptor
 import android.graphics.Bitmap
 import android.media.MediaMetadataRetriever
 import android.media.MediaPlayer
@@ -28,6 +29,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 import java.util.*
 import java.util.concurrent.ExecutorService
 import kotlin.collections.ArrayList
+import kotlin.reflect.typeOf
 
 lateinit var currentPose:DoubleArray
 
@@ -43,8 +45,9 @@ class MainActivity : AppCompatActivity(), calcPoseVector {
     var time = 0
     lateinit var retriever : MediaMetadataRetriever
     lateinit var mediaPlayer : MediaPlayer
-    var CheckSet : Int =0
+    var CheckSet : Int = 0
     var finalScore = 0
+    //var selectedVideo = intent.getIntExtra("video", 0) //intent R.raw file
 
     var LoadCheck: TimerTask = object : TimerTask() {
         override fun run() {
@@ -95,9 +98,9 @@ class MainActivity : AppCompatActivity(), calcPoseVector {
 
         loadGame()
     }
-
     fun loadGame() {
 
+        //Log.d("확--------------------------")
         //포즈디텍터 생성
         val options = AccuratePoseDetectorOptions.Builder()
             .setDetectorMode(AccuratePoseDetectorOptions.SINGLE_IMAGE_MODE)
@@ -105,9 +108,20 @@ class MainActivity : AppCompatActivity(), calcPoseVector {
         val poseDetector = PoseDetection.getClient(options)
 
         //동영상 view 셋팅
-        val videopath = "android.resource://com.cs496.rhythm/" + R.raw.test
+        //${selectedVideo.toString()}
+//        val tmp = selectedVideo?.toInt()
+
+/*        val afd : AssetFileDescriptor = getAssets().openFd("test.mp4");
+        videov.setVideoPath(afd)
+        retriever = MediaMetadataRetriever()
+        tempImage = ArrayList()
+        posePerTime = ArrayList()
+        retriever.setDataSource(afd.getFileDescriptor(),afd.getStartOffset(),afd.getLength())
+        mediaPlayer = MediaPlayer,  */
+        val videopath = "android.resource://com.cs496.rhythm/" + R.raw.testrasputin40s
         val uri = Uri.parse(videopath)
         videov.setVideoURI(uri)
+        //videov.setVideoPath("content://com.cs496.rhythm/test.mp4")
         retriever = MediaMetadataRetriever()
         tempImage = ArrayList()
         posePerTime = ArrayList()

@@ -45,6 +45,7 @@ class MainActivity : AppCompatActivity(), calcPoseVector {
     lateinit var mediaPlayer : MediaPlayer
     var CheckSet : Int =0
     var finalScore = 0
+    var selectedVideo = intent.getIntExtra("video", 0) //intent R.raw file
 
     var LoadCheck: TimerTask = object : TimerTask() {
         override fun run() {
@@ -105,7 +106,7 @@ class MainActivity : AppCompatActivity(), calcPoseVector {
         val poseDetector = PoseDetection.getClient(options)
 
         //동영상 view 셋팅
-        val videopath = "android.resource://com.cs496.rhythm/" + R.raw.test
+        val videopath = "android.resource://com.cs496.rhythm/" + selectedVideo
         val uri = Uri.parse(videopath)
         videov.setVideoURI(uri)
         retriever = MediaMetadataRetriever()

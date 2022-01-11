@@ -1,10 +1,18 @@
 package com.cs496.rhythm;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,6 +34,14 @@ import com.squareup.picasso.Picasso;
 
 public class SelectVideoActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
 
+    //game list
+    GridView gridView;
+    String[] names = {"Rasputin", "BBoom BBoom", "Test"};
+    int[] images = {R.drawable.rasputin_list, R.drawable.ic_launcher_foreground, R.drawable.ic_launcher_background};
+    int[] videos = {2131689472, 2131689472, 2131689472};
+
+
+    //google login
     private ImageView profile_image;
     private TextView name;
     private Button signoutBtn;
@@ -38,7 +54,7 @@ public class SelectVideoActivity extends AppCompatActivity implements GoogleApiC
         super.onCreate(savedInstanceState);
         setContentView(R.layout.game_list);
 
-        profile_image = findViewById(R.id.profileImage);
+        //profile_image = findViewById(R.id.profileImage);
         name = findViewById(R.id.name);
         signoutBtn = findViewById(R.id.logoutBtn);
 
@@ -61,8 +77,27 @@ public class SelectVideoActivity extends AppCompatActivity implements GoogleApiC
                 });
             }
         });
+
+        Log.d("확인용--------------------", String.valueOf(R.raw.test));
+
+        //game list
+        gridView = findViewById(R.id.gridView);
+        CustomAdapter customAdapter = new CustomAdapter(names, images, videos,this);
+        gridView.setAdapter(customAdapter);
+
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                String selectedTitle = names[i];
+                int selectedImage = images[i];
+                int selectedVideo = videos[i];
+                startActivity(new Intent(SelectVideoActivity.this, RankingActivity.class).putExtra("title", selectedTitle).putExtra("image", selectedImage).putExtra("video", selectedVideo));
+            }
+        });
+
     }
 
+    //google login
     private void gotoLoginActivity() {
         startActivity(new Intent(SelectVideoActivity.this, LogInActivity.class));
         finish();
@@ -77,7 +112,7 @@ public class SelectVideoActivity extends AppCompatActivity implements GoogleApiC
         if(result.isSuccess()){
             GoogleSignInAccount account = result.getSignInAccount();
             name.setText(account.getDisplayName());
-            Picasso.get().load(account.getPhotoUrl()).placeholder(R.mipmap.ic_launcher_round).into(profile_image);
+            //Picasso.get().load(account.getPhotoUrl()).placeholder(R.mipmap.ic_launcher_round).into(profile_image);
         } else {
             gotoLoginActivity();
         }
@@ -99,4 +134,52 @@ public class SelectVideoActivity extends AppCompatActivity implements GoogleApiC
             });
         }
     }
+
+    //game list
+    public class CustomAdapter extends BaseAdapter{
+        private String[] imageNames;
+        private int[] imagePhoto;
+        private int[] videos;
+        private Context context;
+        private LayoutInflater layoutInflater;
+
+        public CustomAdapter(String[] imageNames, int[] imagePhoto, int[] videos, Context context){
+            this.imageNames = imageNames;
+            this.imagePhoto = imagePhoto;
+            this.videos = videos;
+            this.context = context;
+            this.layoutInflater = (LayoutInflater) context.getSystemService(LAYOUT_INFLATER_SERVICE);
+        }
+
+        @Override
+        public int getCount() {
+            return imagePhoto.length;
+        }
+
+        @Override
+        public Object getItem(int i) {
+            return null;
+        }
+
+        @Override
+        public long getItemId(int i) {
+            return 0;
+        }
+
+        @Override
+        public View getView(int i, View view, ViewGroup viewGroup) {
+            if(view == null){
+                view = layoutInflater.inflate(R.layout.row_data, viewGroup, false);
+
+            }
+            TextView vTitle = view.findViewById(R.id.vTitle);
+            ImageView imageView = view.findViewById(R.id.imageView);
+
+            vTitle.setText(imageNames[i]);
+            imageView.setImageResource(imagePhoto[i]);
+
+            return view;
+        }
+    }
+
 }
