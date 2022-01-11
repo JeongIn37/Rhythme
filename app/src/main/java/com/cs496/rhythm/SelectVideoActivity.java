@@ -36,8 +36,8 @@ public class SelectVideoActivity extends AppCompatActivity implements GoogleApiC
 
     //game list
     GridView gridView;
-    String[] names = {"Rasputin", "BBoom BBoom", "Test"};
-    int[] images = {R.drawable.rasputin_list, R.drawable.ic_launcher_foreground, R.drawable.ic_launcher_background};
+    String[] names = {"Rasputin", "BBoom BBoom", "Coming Soon"};
+    int[] images = {R.drawable.rasputin_list, R.drawable.bboom, R.drawable.question};
     int[] videos = {2131689472, 2131689472, 2131689472};
 
 
