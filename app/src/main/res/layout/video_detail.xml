@@ -19,7 +19,7 @@
         tools:ignore="MissingConstraints"
         tools:srcCompat="@tools:sample/avatars" />
 
-    <ListView
+    <TextView
         android:id="@+id/rankingList"
         android:layout_width="342dp"
         android:layout_height="156dp"
